@@ -3,15 +3,14 @@
 #include <glad/glad.h>
 #include <string>
 
-namespace Renderer 
-{
-    class ShaderProgram 
-    {
+namespace Renderer {
+    class ShaderProgram {
     public:
         ShaderProgram(const std::string& vertexShader, const std::string& fragmentShader);
         ~ShaderProgram();
         bool isCompiled() const { return m_isCompiled; }
         void use() const;
+        void setInt(const std::string& name, const GLint value);
 
         ShaderProgram() = delete;
         ShaderProgram(const ShaderProgram&) = delete;
