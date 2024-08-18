@@ -2,7 +2,7 @@
 
 namespace Renderer {
 
-    Texture2D::Texture2D(const GLuint width, GLuint height,
+    Texture2D::Texture2D(const GLuint width, const GLuint height,
         const unsigned char* data,
         const unsigned int channels,
         const GLenum filter,

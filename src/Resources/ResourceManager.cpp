@@ -40,14 +40,14 @@ std::shared_ptr<Renderer::ShaderProgram> ResourceManager::loadShaders(const std:
         return nullptr;
     }
 
-    std::string fragmentxString = getFileString(fragmentPath);
-    if (fragmentxString.empty())
+    std::string fragmentString = getFileString(fragmentPath);
+    if (fragmentString.empty())
     {
         std::cerr << "No fragment shader!" << std::endl;
         return nullptr;
     }
 
-    std::shared_ptr<Renderer::ShaderProgram>& newShader = m_shaderPrograms.emplace(shaderName, std::make_shared<Renderer::ShaderProgram>(vertexString, fragmentxString)).first->second;
+    std::shared_ptr<Renderer::ShaderProgram>& newShader = m_shaderPrograms.emplace(shaderName, std::make_shared<Renderer::ShaderProgram>(vertexString, fragmentString)).first->second;
     if (newShader->isCompiled())
     {
         return newShader;
