@@ -162,7 +162,7 @@ std::shared_ptr<Renderer::Texture2D> ResourceManager::loadTextureAtlas(const std
         unsigned int currentTextureOffsetY = textureHeight;
         for (const auto& currentSubTextureName : subTextures)
         {
-            glm::vec2 leftBottomUV(static_cast<float>(currentTextureOffsetX) / textureWidth, static_cast<float>(currentTextureOffsetY) - subTextureWidth / textureHeight);
+            glm::vec2 leftBottomUV(static_cast<float>(currentTextureOffsetX)/textureWidth, static_cast<float>(currentTextureOffsetY - subTextureHeight)/textureHeight);
             glm::vec2 rightTopUV(static_cast<float>(currentTextureOffsetX + subTextureWidth) / textureWidth, static_cast<float>(currentTextureOffsetY) / textureHeight);
             pTexture->addSubTexture(std::move(currentSubTextureName), leftBottomUV, rightTopUV);
 

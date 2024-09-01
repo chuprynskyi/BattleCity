@@ -3,11 +3,8 @@
 #include "ShaderProgram.h"
 #include "Texture2D.h"
 
-
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-
-
 
 namespace Renderer
 {
@@ -22,7 +19,6 @@ namespace Renderer
 		, m_position(position)
 		, m_size(size)
 		, m_rotation(rotation)
-			
 	{
 		const GLfloat vertexCoords[] = {
 			// 2--3....1
@@ -48,8 +44,8 @@ namespace Renderer
 			subTexture.rightTopUV.x, subTexture.rightTopUV.y,
 
 			subTexture.rightTopUV.x, subTexture.rightTopUV.y,
-			subTexture.leftBottomUV.x, subTexture.rightTopUV.y,
-			subTexture.leftBottomUV.x, subTexture.leftBottomUV.y,
+			subTexture.rightTopUV.x, subTexture.leftBottomUV.y,
+			subTexture.leftBottomUV.x, subTexture.leftBottomUV.y
 		};
 
 		glGenVertexArrays(1, &m_VAO);
