@@ -33,6 +33,8 @@ GLfloat texCoord[] = {
 
 glm::ivec2 g_windowSize(640, 480);
 
+bool isEagle = false;
+
 void glfwWindowSizeCallback(GLFWwindow* pWindow, int width, int height)
 {
 	g_windowSize.x = width;
@@ -45,6 +47,11 @@ void glfwKeyCallback(GLFWwindow* pWindow, int key, int scancode, int action, int
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 	{
 		glfwSetWindowShouldClose(pWindow, GL_TRUE);
+	}
+
+	if (key == GLFW_KEY_ENTER && action == GLFW_PRESS)
+	{
+		isEagle = !isEagle;
 	}
 }
 
@@ -216,6 +223,15 @@ int main(int argc, char** argv)
 		/* Loop until the user closes the window */
 		while (!glfwWindowShouldClose(pWindow))
 		{
+			if (isEagle)
+			{
+				pAnimatedSprite->setState("eagleState");
+			}
+			else
+			{
+				pAnimatedSprite->setState("waterState");
+			}
+
 			auto currentTime = std::chrono::high_resolution_clock::now();
 			uint64_t duration = std::chrono::duration_cast<std::chrono::nanoseconds>(currentTime - lastTime).count();
 			lastTime = currentTime;
