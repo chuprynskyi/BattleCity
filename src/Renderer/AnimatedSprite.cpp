@@ -16,7 +16,7 @@ namespace Renderer
 		m_pCurrentAnimationDurations = m_statesMap.end();
 	}
 
-	void AnimatedSprite::InsertState(std::string state, std::vector<std::pair<std::string, uint64_t>> subTextureDuration)
+	void AnimatedSprite::insertState(std::string state, std::vector<std::pair<std::string, uint64_t>> subTextureDuration)
 	{
 		m_statesMap.emplace(std::move(state), std::move(subTextureDuration));
 	}
