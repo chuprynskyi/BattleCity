@@ -1,11 +1,10 @@
-#include "Game.h"
-
 #include "../Resources/ResourceManager.h"
 #include "../Renderer/ShaderProgram.h"
 #include "../Renderer/Texture2D.h"
 #include "../Renderer/Sprite.h"
 #include "../Renderer/AnimatedSprite.h"
 
+#include "Game.h"
 #include "Tank.h"
 
 #include <glm/mat4x4.hpp>
@@ -45,25 +44,21 @@ void Game::update(const uint64_t delta)
             m_pTank->setOrientation(Tank::EOrientation::Top);
             m_pTank->move(true);
 	    }
-
         else if (m_keys[GLFW_KEY_S])
         {
             m_pTank->setOrientation(Tank::EOrientation::Bottom);
             m_pTank->move(true);
         }
-
         else if (m_keys[GLFW_KEY_A])
         {
             m_pTank->setOrientation(Tank::EOrientation::Left);
             m_pTank->move(true);
         }
-
         else if (m_keys[GLFW_KEY_D])
         {
             m_pTank->setOrientation(Tank::EOrientation::Right);
             m_pTank->move(true);
         }
-
 	    else
 	    {
             m_pTank->move(false);
