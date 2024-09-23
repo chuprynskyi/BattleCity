@@ -1,7 +1,7 @@
 #pragma once
 #include "glad/glad.h"
 
-namespace Renderer
+namespace RenderEngine
 {
 	class IndexBuffer
 	{
@@ -14,11 +14,13 @@ namespace Renderer
 		IndexBuffer& operator=(IndexBuffer&& indexBuffer) noexcept;
 		IndexBuffer(IndexBuffer&& indexBuffer)noexcept;
 
-		void init(const unsigned int size, const void* data);
+		void init(const unsigned int count, const void* data);
 		void bind() const;
 		void unbind() const;
+		unsigned int getCount() const { return m_count; }
 
 	private:
 		GLuint m_id;
+		GLsizei m_count;
 	};
 }
