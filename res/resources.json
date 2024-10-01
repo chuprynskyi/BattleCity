@@ -11,11 +11,9 @@
 		{
 			"name" 				: "mapTextureAtlas",
 			"filePath"  		: "res/textures/map_16x16.png",
-			"width" 			: 128,
-			"height" 			: 128,
 			"subTextureWidth"   : 16,
 			"subTextureHeight"  : 16,
-			"subTexture" : [
+			"subTextures" : [
 				"block",
 				"topBlock",
 				"bottomBlock",
@@ -53,8 +51,6 @@
 		{
 			"name" 				: "tanksTextureAtlas",
 			"filePath" 			: "res/textures/tanks.png",
-			"width" 			: 256,
-			"height" 			: 256,
 			"subTextureWidth" 	: 16,
 			"subTextureHeight" 	: 16,
 			"subTextures" : [
@@ -77,7 +73,7 @@
 			"shader" 			: "spriteShader",
 			"initialWidth" 		: 100,
 			"initialHeight" 	: 100,
-			"initialSubTexture" : "yellowType1_Top1",
+			"initialSubTexture" : "yellowType1_Right1",
 			"states" : [
 				{
 					"stateName" : "tankTopState",
