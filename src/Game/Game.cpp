@@ -78,10 +78,16 @@ bool Game::init()
     ResourceManager::loadJSONResources("res/resources.json");
 
     auto pSpriteShaderProgram = ResourceManager::getShaderProgram("spriteShader");
-
-    auto tex = ResourceManager::loadTexture("DefaultTexture", "res/textures/map_16x16.png");
+    if (!pSpriteShaderProgram)
+    {
+        std::cerr << "Can't find shader: " << "spriteShader" << std::endl;
+    }
 
     auto pTextureAtlas = ResourceManager::getTexture("mapTextureAtlas");
+    if (!pTextureAtlas)
+    {
+        std::cerr << "Can't find texture atlas: " << "mapTextureAtlas" << std::endl;
+    }
 
     auto pAnimatedSprite = ResourceManager::loadAnimatedSprite("NewAnimatedSprite", "mapTextureAtlas", "spriteShader", 100, 100, "beton");
     pAnimatedSprite->setPosition(glm::vec2(300, 300));
@@ -98,17 +104,25 @@ bool Game::init()
     pAnimatedSprite->insertState("eagleState", std::move(eagleState));
 
     pAnimatedSprite->setState("waterState");
+    auto pTankTextureAtlas = ResourceManager::getTexture("tanksTextureAtlas");
+    if (!pTankTextureAtlas)
+    {
+        std::cerr << "Can't find texture atlas: " << "tanksTextureAtlas" << std::endl;
+    }
 
     glm::mat4 projectionMatrix = glm::ortho(0.f, static_cast<float>(m_windowSize.x), 0.f, static_cast<float>(m_windowSize.y), -100.f, 100.f);
 
     pSpriteShaderProgram->use();
     pSpriteShaderProgram->setMatrix4("projectionMat", projectionMatrix);
 
-    auto pTankTextureAtlas = ResourceManager::getTexture("tanksTextureAtlas");
 
     auto pTankAnimatedSprite = ResourceManager::getAnimatedSprite("tankAnimatedSprite");
+    if (!pTankTextureAtlas)
+    {
+        std::cerr << "Can't find animated sprite: " << "tankAnimatedSprite" << std::endl;
+    }
 
-    m_pTank = std::make_unique<Tank>(pTankAnimatedSprite, 0.0000001f, glm::vec2(100.f));
+    m_pTank = std::make_unique<Tank>(pTankAnimatedSprite, 0.0000001f, glm::vec2(0), glm::vec2(16.f, 16.f));
 
     return true;
 }
