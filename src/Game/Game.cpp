@@ -6,6 +6,7 @@
 
 #include "Game.h"
 #include "GameObjects/Tank.h"
+#include "Level.h"
 
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -31,10 +32,20 @@ void Game::render()
     {
         m_pTank->render();
     }
+
+    if (m_pLevel)
+    {
+        m_pLevel->render();
+    }
 }
 
 void Game::update(const uint64_t delta)
 {
+    if (m_pLevel)
+    {
+        m_pLevel->update(delta);
+    }
+
     if(m_pTank)
     {
 	    if (m_keys[GLFW_KEY_W])
@@ -99,13 +110,15 @@ bool Game::init()
     pSpriteShaderProgram->setMatrix4("projectionMat", projectionMatrix);
 
 
-    auto pTankAnimatedSprite = ResourceManager::getAnimatedSprite("tankAnimatedSprite");
+    auto pTanksAnimatedSprite = ResourceManager::getAnimatedSprite("tankAnimatedSprite");
     if (!pTankTextureAtlas)
     {
         std::cerr << "Can't find animated sprite: " << "tankAnimatedSprite" << std::endl;
     }
 
-    m_pTank = std::make_unique<Tank>(pTankAnimatedSprite, 0.0000001f, glm::vec2(0), glm::vec2(16.f, 16.f));
+    m_pTank = std::make_unique<Tank>(pTanksAnimatedSprite, 0.0000001f, glm::vec2(0), glm::vec2(16.f, 16.f));
+
+    m_pLevel = std::make_unique<Level>(ResourceManager::getLevels()[0]);
 
     return true;
 }

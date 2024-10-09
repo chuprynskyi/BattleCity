@@ -1,4 +1,4 @@
-#pragma onceconst glm::vec2 position, const glm::vec2 size, const float rotation
+#pragma once
 
 #include <glm/vec2.hpp>
 

@@ -19,6 +19,7 @@ ResourceManager::ShaderProgramsMap ResourceManager::m_shaderPrograms;
 ResourceManager::TexturesMap ResourceManager::m_textures;
 ResourceManager::SpritesMap ResourceManager::m_sprites;
 ResourceManager::AnimatedSpritesMap ResourceManager::m_animatedSprites;
+std::vector<std::vector<std::string>> ResourceManager::m_levels;
 std::string ResourceManager::m_path;
 
 
@@ -144,7 +145,7 @@ std::shared_ptr<RenderEngine::Sprite> ResourceManager::loadSprite(const std::str
         std::cerr << "Can't find the shader program: " << shaderName << " for the sprite: " << spriteName << std::endl;
     }
 
-    std::shared_ptr<RenderEngine::Sprite> newSprite = m_sprites.emplace(textureName, std::make_shared<RenderEngine::Sprite>(pTexture,
+    std::shared_ptr<RenderEngine::Sprite> newSprite = m_sprites.emplace(spriteName, std::make_shared<RenderEngine::Sprite>(pTexture,
                                                                                                                     subTextureName,
                                                                                                                     pShader)).first->second;
 
@@ -311,6 +312,24 @@ bool ResourceManager::loadJSONResources(const std::string& JSONPath)
         }
     }
 
+    auto spritesIt = document.FindMember("sprites");
+    if (spritesIt != document.MemberEnd())
+    {
+        for (const auto& currentSprite : spritesIt->value.GetArray())
+        {
+            const std::string name = currentSprite["name"].GetString();
+            const std::string textureAtlas = currentSprite["textureAtlas"].GetString();
+            const std::string shader = currentSprite["shader"].GetString();
+            const std::string subTexture = currentSprite["subTextureName"].GetString();
+
+            auto pSprite = loadSprite(name, textureAtlas, shader, subTexture);
+            if (!pSprite)
+            {
+                continue;
+            }
+        }
+    }
+
     auto levelsIt = document.FindMember("levels");
     if (levelsIt != document.MemberEnd())
     {
@@ -319,11 +338,24 @@ bool ResourceManager::loadJSONResources(const std::string& JSONPath)
             const auto description = currentLevel["description"].GetArray();
             std::vector<std::string> levelRows;
             levelRows.reserve(description.Size());
+            size_t maxLenght = 0;
             for (const auto& currentRows : description)
             {
                 levelRows.emplace_back(currentRows.GetString());
+                if (maxLenght < levelRows.back().length())
+                {
+                    maxLenght = levelRows.back().length();
+                }
             }
 
+            for (auto& currentRow : levelRows)
+            {
+	            while (currentRow.length() < maxLenght)
+	            {
+                    currentRow.append("D");
+	            }
+            }
+            m_levels.emplace_back(std::move(levelRows));
         }
     }
 
