@@ -46,14 +46,14 @@ Level::Level(const std::vector<std::string>& levelDescription)
 	m_width = levelDescription[0].length();
 	m_height = levelDescription.size();
 
-	m_levelObjects.reserve(m_width * m_height);
+	m_mapObjects.reserve(m_width * m_height);
 	unsigned int currentBottomOffset = BLOCK_SIZE * (m_height - 1);
 	for (const  std::string& currentRow : levelDescription)
 	{
 		unsigned int currentLeftOffset = 0;
 		for (const char currentChar : currentRow)
 		{
-			createGameObjectFromDescription(currentChar, glm::vec2(currentLeftOffset, currentBottomOffset), glm::vec2(BLOCK_SIZE, BLOCK_SIZE), 0);
+			 m_mapObjects.emplace_back(createGameObjectFromDescription(currentChar, glm::vec2(currentLeftOffset, currentBottomOffset), glm::vec2(BLOCK_SIZE, BLOCK_SIZE), 0));
 
 			currentLeftOffset += BLOCK_SIZE;
 		}
@@ -61,9 +61,9 @@ Level::Level(const std::vector<std::string>& levelDescription)
 	}
 }
 
-void Level::render()
+void Level::render() const
 {
-	for(const auto& currentMapObject : m_levelObjects)
+	for(const auto& currentMapObject : m_mapObjects)
 	{
 		if (currentMapObject)
 		{
@@ -74,7 +74,7 @@ void Level::render()
 
 void Level::update(const size_t delta)
 {
-	for (const auto& currentMapObject : m_levelObjects)
+	for (const auto& currentMapObject : m_mapObjects)
 	{
 		if (currentMapObject)
 		{
