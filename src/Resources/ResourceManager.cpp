@@ -164,9 +164,9 @@ std::shared_ptr<RenderEngine::Sprite> ResourceManager::getSprite(const std::stri
 }
 
 std::shared_ptr<RenderEngine::AnimatedSprite> ResourceManager::loadAnimatedSprite(const std::string& spriteName,
-                                                                              const std::string& textureName,
-                                                                              const std::string& shaderName,
-                                                                              const std::string& subTextureName)
+                                                                                  const std::string& textureName,
+                                                                                  const std::string& shaderName,
+                                                                                  const std::string& subTextureName)
 {
     auto pTexture = getTexture(textureName);
     if (!pTexture)
@@ -199,10 +199,10 @@ std::shared_ptr<RenderEngine::AnimatedSprite> ResourceManager::getAnimatedSprite
 }
 
 std::shared_ptr<RenderEngine::Texture2D> ResourceManager::loadTextureAtlas(std::string textureName, 
-                                                                       std::string texturePath, 
-                                                                       std::vector<std::string> subTextures, 
-                                                                       const unsigned int subTextureWidth, 
-                                                                       const unsigned int subTextureHeight)
+                                                                           std::string texturePath, 
+                                                                           std::vector<std::string> subTextures, 
+                                                                           const unsigned int subTextureWidth, 
+                                                                           const unsigned int subTextureHeight)
 {
     auto pTexture = loadTexture(std::move(textureName), std::move(texturePath));
     if (pTexture)
@@ -213,8 +213,8 @@ std::shared_ptr<RenderEngine::Texture2D> ResourceManager::loadTextureAtlas(std::
         unsigned int currentTextureOffsetY = textureHeight;
         for (auto& currentSubTextureName : subTextures)
         {
-            glm::vec2 leftBottomUV(static_cast<float>(currentTextureOffsetX)/textureWidth, static_cast<float>(currentTextureOffsetY - subTextureHeight)/textureHeight);
-            glm::vec2 rightTopUV(static_cast<float>(currentTextureOffsetX + subTextureWidth) / textureWidth, static_cast<float>(currentTextureOffsetY) / textureHeight);
+            glm::vec2 leftBottomUV(static_cast<float>(currentTextureOffsetX + 0.01f)/textureWidth, static_cast<float>(currentTextureOffsetY - subTextureHeight + 0.01f)/textureHeight);
+            glm::vec2 rightTopUV(static_cast<float>(currentTextureOffsetX + subTextureWidth - 0.01f) / textureWidth, static_cast<float>(currentTextureOffsetY - 0.01f) / textureHeight);
             pTexture->addSubTexture(std::move(currentSubTextureName), leftBottomUV, rightTopUV);
 
             currentTextureOffsetX += subTextureWidth;
