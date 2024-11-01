@@ -1,21 +1,22 @@
 #pragma once
 
-#include "memory"
+#include <memory>
 
-namespace RenderEngine
-{
+namespace RenderEngine {
+
     class Sprite;
 
     class SpriteAnimator {
     public:
         SpriteAnimator(std::shared_ptr<Sprite> pSprite);
-        size_t getCurrentFrame() { return m_currentFrame; }
-        void update(const size_t delta);
+        size_t getCurrentFrame() const { return m_currentFrame; }
+        void update(const uint64_t delta);
 
-    protected:
+    private:
         std::shared_ptr<Sprite> m_pSprite;
         size_t m_currentFrame;
         uint64_t m_currentFrameDuration;
         uint64_t m_currentAnimationTime;
     };
+
 }

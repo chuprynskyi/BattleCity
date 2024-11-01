@@ -9,76 +9,107 @@
 
 namespace RenderEngine
 {
-	Sprite::Sprite(std::shared_ptr<Texture2D> pTexture, 
-				   std::string initialSubTexture,
-				   std::shared_ptr<ShaderProgram> pShaderProgram)
-				   : m_pTexture(std::move(pTexture))
-				   , m_pShaderProgram(std::move(pShaderProgram))
-	{
-		const GLfloat vertexCoords[] = {
-			// 1--2
-			// |./|
-			// 0--3
+    Sprite::Sprite(std::shared_ptr<Texture2D> pTexture,
+        std::string initialSubTexture,
+        std::shared_ptr<ShaderProgram> pShaderProgram)
+        : m_pTexture(std::move(pTexture))
+        , m_pShaderProgram(std::move(pShaderProgram))
+        , m_lastFrameId(0)
+    {
+        const GLfloat vertexCoords[] = {
+			// 1-2
+			// |/|
+			// 0-3
 
-			// X...Y
-			0.f, 0.f,
-			0.f, 1.f,
-			1.f, 1.f,
-			1.f, 0.f,
-		};
+            // X  Y
+            0.f, 0.f,
+            0.f, 1.f,
+            1.f, 1.f,
+            1.f, 0.f
+        };
 
-		auto subTexture = m_pTexture->getSubTexture(std::move(initialSubTexture));
+        auto subTexture = m_pTexture->getSubTexture(std::move(initialSubTexture));
 
-		const GLfloat textureCoords[] = {
-			// U..V
-			subTexture.leftBottomUV.x,	subTexture.leftBottomUV.y,
-			subTexture.leftBottomUV.x,	subTexture.rightTopUV.y,
-			subTexture.rightTopUV.x,	subTexture.rightTopUV.y,
-			subTexture.rightTopUV.x,	subTexture.leftBottomUV.y,
-		};
+        const GLfloat textureCoords[] = {
+            // U  V
+            subTexture.leftBottomUV.x, subTexture.leftBottomUV.y,
+            subTexture.leftBottomUV.x, subTexture.rightTopUV.y,
+            subTexture.rightTopUV.x,   subTexture.rightTopUV.y,
+            subTexture.rightTopUV.x,   subTexture.leftBottomUV.y,
+        };
 
-		const GLint indices[] = {
-			0, 1, 2,
-			2, 3, 0
-		};
+        const GLuint indices[] = {
+            0, 1, 2,
+            2, 3, 0
+        };
 
 		m_vertexCoordsBuffer.init(2 * 4 * sizeof(GLfloat), vertexCoords);
-		VertexBufferLayout vertexCoordsLayout;
-		vertexCoordsLayout.addElementLayoutFloat(2, false);
-		m_vertexArray.addBuffer(m_vertexCoordsBuffer, vertexCoordsLayout);
+        VertexBufferLayout vertexCoordsLayout;
+        vertexCoordsLayout.addElementLayoutFloat(2, false);
+        m_vertexArray.addBuffer(m_vertexCoordsBuffer, vertexCoordsLayout);
 
 		m_textureCoordsBuffer.init(2 * 4 * sizeof(GLfloat), textureCoords);
-		VertexBufferLayout textureCoordsLayout;
-		textureCoordsLayout.addElementLayoutFloat(2, false);
-		m_vertexArray.addBuffer(m_textureCoordsBuffer, textureCoordsLayout);
+        VertexBufferLayout textureCoordsLayout;
+        textureCoordsLayout.addElementLayoutFloat(2, false);
+        m_vertexArray.addBuffer(m_textureCoordsBuffer, textureCoordsLayout);
 
 		m_indexBuffer.init(6, indices);
 
-		m_vertexArray.unbind();
-		m_indexBuffer.unbind();
-	}
+        m_vertexArray.unbind();
+        m_indexBuffer.unbind();
+    }
 
-	Sprite::~Sprite()
-	{
-	}
+    Sprite::~Sprite()
+    {
+    }
 
-	void Sprite::render(const glm::vec2& position, const glm::vec2& size, const float rotation) const
-	{
-		m_pShaderProgram->use();
+    void Sprite::render(const glm::vec2& position, const glm::vec2& size, const float rotation, const size_t frameId) const
+    {
+        if (m_lastFrameId != frameId)
+        {
+            m_lastFrameId = frameId;
+            const FrameDescription& currentFrameDescription = m_framesDescriptions[frameId];
 
-		glm::mat4 model(1.f);
+            const GLfloat textureCoords[] = {
+                // U  V
+                currentFrameDescription.leftBottomUV.x, currentFrameDescription.leftBottomUV.y,
+                currentFrameDescription.leftBottomUV.x, currentFrameDescription.rightTopUV.y,
+                currentFrameDescription.rightTopUV.x,   currentFrameDescription.rightTopUV.y,
+                currentFrameDescription.rightTopUV.x,   currentFrameDescription.leftBottomUV.y,
+            };
 
-		model = glm::translate(model, glm::vec3(position, 0.f));
-		model = glm::translate(model, glm::vec3(0.5f * size.x, 0.5f * size.y, 0.f));
-		model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.f, 0.f, 1.f));
-		model = glm::translate(model, glm::vec3(-0.5f * size.x, -0.5f * size.y, 0.f));
-		model = glm::scale(model, glm::vec3(size, 1.f));
-	
-		m_pShaderProgram->setMatrix4("modelMat", model);
+			m_textureCoordsBuffer.update(2 * 4 * sizeof(GLfloat), textureCoords);
+        }
 
-		glActiveTexture(GL_TEXTURE0);
-		m_pTexture->bind();
+        m_pShaderProgram->use();
 
-		RenderEngine::Renderer::draw(m_vertexArray, m_indexBuffer, *m_pShaderProgram);
-	}
+        glm::mat4 model(1.f);
+        model = glm::translate(model, glm::vec3(position, 0.f));
+        model = glm::translate(model, glm::vec3(0.5f * size.x, 0.5f * size.y, 0.f));
+        model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.f, 0.f, 1.f));
+        model = glm::translate(model, glm::vec3(-0.5f * size.x, -0.5f * size.y, 0.f));
+        model = glm::scale(model, glm::vec3(size, 1.f));
+
+        m_pShaderProgram->setMatrix4("modelMat", model);
+
+        glActiveTexture(GL_TEXTURE0);
+        m_pTexture->bind();
+
+        Renderer::draw(m_vertexArray, m_indexBuffer, *m_pShaderProgram);
+    }
+    uint64_t Sprite::getFrameDuration(const size_t frameId) const
+    {
+        return m_framesDescriptions[frameId].duration;
+    }
+
+    size_t Sprite::getFramesCount() const
+    {
+        return m_framesDescriptions.size();
+    }
+
+    void Sprite::insertFrames(std::vector<FrameDescription> framesDescriptions)
+    {
+        m_framesDescriptions = std::move(framesDescriptions);
+    }
+
 }
